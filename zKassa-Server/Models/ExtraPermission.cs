@@ -9,12 +9,12 @@ namespace zKassa_Server.Models
     public class ExtraPermission
     {
         public string EmployeeId { get; set; }
-        public int ActionID { get; set; }
+        public Permission ActionID { get; set; }
 
         [AllowNull]
         public virtual Employee Employee { get; set; }
 
-        public ExtraPermission(string employeeId, int actionId)
+        public ExtraPermission(string employeeId, Permission actionId)
         {
             EmployeeId = employeeId;
             ActionID = actionId;

@@ -6,9 +6,9 @@ namespace zKassa_Server.ControllerModels
     {
         public string Id { get; set; }
         public string? UserName { get; set; }
-        public int Role { get; set; }
+        public Role Role { get; set; }
         public string PhoneNumber { get; set; }
-        public IEnumerable<int> ExtraPermissionIds { get; set; }
+        public IEnumerable<Permission> ExtraPermissionIds { get; set; }
 
         public EmployeeInformation(Employee employee)
         {

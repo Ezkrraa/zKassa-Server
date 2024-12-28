@@ -25,7 +25,13 @@ public class RoleCheck : Attribute
         Employee? employee = await userManager.GetUserAsync(context.HttpContext.User);
         if (employee == null)
         {
-            //Fail:
+            Fail:
+            context.Result = new UnauthorizedResult();
+            return;
+        }
+
+        if (!PermissionMethods.IsAtLeast(_permissionRequired, employee.Role))
+        {
             context.Result = new UnauthorizedResult();
             return;
         }

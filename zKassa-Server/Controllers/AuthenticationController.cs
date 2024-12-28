@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
 using zKassa_Server.Services;
@@ -36,9 +34,7 @@ public class AuthenticationController : ControllerBase
         Employee? user = await _userManager.FindByNameAsync(loginModel.UserName);
         if (user == null)
             return NotFound("No such user");
-        bool result = await _userManager.CheckPasswordAsync(user, loginModel.Password);
-        if (result)
-            return Ok(_jwtService.GenerateToken(user, _configuration)); // TODO: return new token
-        return BadRequest("Bad password combo"); //TODO: replace in prod (shouldn't leak such info)
+        // TODO: check if user is permitted to use their drawer on that day etc.
+        return Ok(_jwtService.GenerateToken(user, _configuration));
     }
 }

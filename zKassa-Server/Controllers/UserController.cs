@@ -23,7 +23,7 @@ namespace zKassa_Server.Controllers
             _dbContext = dbContext;
         }
 
-        [RoleCheck(Permission.CreateAccount)]
+        [RoleCheck(Permission.CreateAnyAccount)]
         [HttpPost("CreateEmployee")]
         public async Task<IActionResult> CreateEmployee([FromBody] NewEmployee newEmployee)
         {
@@ -41,7 +41,7 @@ namespace zKassa_Server.Controllers
             return _dbContext.Users.Select(user => new EmployeeInformation(user)).ToList();
         }
 
-        [RoleCheck(Permission.ChangeEmployee)]
+        [RoleCheck(Permission.EditAnyEmployee)]
         [HttpPatch("UpdateEmployee")]
         [Obsolete(
             "Only for testing purposes since this should have WAY more checks, specific endpoints for specific things etc"

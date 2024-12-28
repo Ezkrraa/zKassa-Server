@@ -8,7 +8,7 @@ namespace zKassa_Server.Models;
 [PrimaryKey(nameof(Id))]
 public class Employee : IdentityUser
 {
-    public int Role { get; set; }
+    public Role Role { get; set; }
 
     [AllowNull]
     public virtual ICollection<ExtraPermission> ExtraPermissions { get; set; }

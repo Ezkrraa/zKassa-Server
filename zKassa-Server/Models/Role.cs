@@ -14,6 +14,6 @@
         HR, // duhh (no inherited perms)
         Admin, // access to store roles up to teamLead, (TO BE ADDED ON)
         ProductManager, // full access to product properties (inl. creation)
-        Dev, // full access (duhh)
+        Developer, // full access (duhh)
     }
 }
