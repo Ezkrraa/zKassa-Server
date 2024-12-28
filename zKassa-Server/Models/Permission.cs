@@ -8,6 +8,7 @@
         CreateAccount,
 
         // HQ ACTIONS
-        ViewAllEmployees,
+        ViewAllEmployees, // allow viewing every employee and all their information
+        ChangeEmployee, // allow full changing of any employee property
     }
 }

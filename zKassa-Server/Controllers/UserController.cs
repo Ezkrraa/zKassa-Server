@@ -40,5 +40,20 @@ namespace zKassa_Server.Controllers
         {
             return _dbContext.Users.Select(user => new EmployeeInformation(user)).ToList();
         }
+
+        [RoleCheck(Permission.ChangeEmployee)]
+        [HttpPatch("UpdateEmployee")]
+        [Obsolete(
+            "Only for testing purposes since this should have WAY more checks, specific endpoints for specific things etc"
+        )]
+        public async Task<IActionResult> UpdateEmployee([FromBody] Employee newEmployee)
+        {
+            Employee foundEmployee = _dbContext.Users.First(user => user.Id == newEmployee.Id);
+            if (foundEmployee == null)
+                return NotFound("No such employee in DB (ID cannot be changed)");
+            foundEmployee = newEmployee;
+            _dbContext.SaveChanges();
+            return Ok();
+        }
     }
 }
