@@ -4,7 +4,6 @@ namespace zKassa_Server.ControllerModels
 {
     public class NewEmployee
     {
-        public string Id { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
@@ -13,7 +12,7 @@ namespace zKassa_Server.ControllerModels
 
         public Employee ToEmployee()
         {
-            return new Employee(Id, Email, PhoneNumber, UserName);
+            return new Employee(Guid.NewGuid().ToString(), Email, PhoneNumber, UserName);
         }
     }
 }
