@@ -34,5 +34,14 @@ namespace zKassa_Server.Controllers
             _dbContext.SaveChanges();
             return Ok(product);
         }
+
+        [HttpPost("NewAccount")]
+        public async Task<IActionResult> NewEmployee([FromBody] NewEmployee newEmployee)
+        {
+            Employee user = newEmployee.ToEmployee();
+            await _userManager.CreateAsync(user);
+            await _userManager.AddPasswordAsync(user, newEmployee.Password);
+            return Ok(user);
+        }
     }
 }
