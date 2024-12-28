@@ -6,8 +6,7 @@ Project zKassa_database {
 
 Table employees {
     id int [pk] // int
-    username varchar
-    password varchar // bcrypt hash
+    username varchar // the employee's code
     role int 
     // location_id LATER
 }
