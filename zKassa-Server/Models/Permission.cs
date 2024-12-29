@@ -13,7 +13,7 @@
 
         //Cashier           11000-11999
         CheckoutLogin = 11_000,
-        GetItemPrice,
+        GetProductInfo,
         SubmitTransaction,
 
         //SCO               12000-12999

@@ -11,7 +11,7 @@ public class ZDbContext : IdentityDbContext<Employee>
     public override DbSet<Employee> Users { get; set; }
     public DbSet<ExtraPermission> CustomPermissions { get; set; }
     public DbSet<Product> Products { get; set; }
-
+    public DbSet<EanCode> EanCodes { get; set; }
     public string DbPath { get; }
 
     public ZDbContext()
@@ -27,7 +27,7 @@ public class ZDbContext : IdentityDbContext<Employee>
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite($"Data Source={DbPath}");
+        optionsBuilder.UseSqlite($"Data Source={DbPath}").UseLazyLoadingProxies();
         //base.OnConfiguring(optionsBuilder);
     }
 

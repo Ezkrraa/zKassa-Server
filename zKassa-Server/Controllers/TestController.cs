@@ -32,7 +32,7 @@ public class TestController : ControllerBase
     {
         _dbContext.Products.Add(product.ToProduct());
         _dbContext.SaveChanges();
-        return Ok(product);
+        return Ok();
     }
 
     [HttpPost("NewAccount")]
@@ -42,5 +42,16 @@ public class TestController : ControllerBase
         await _userManager.CreateAsync(user);
         await _userManager.AddPasswordAsync(user, newEmployee.Password);
         return Ok(user);
+    }
+
+    [HttpGet("GetAllProducts")]
+    public async Task<IActionResult> GetAllProducts()
+    {
+        return Ok(
+            _dbContext.Products.Select(product => new Tuple<ProductInfo, string>(
+                new ProductInfo(product),
+                product.EanCodes.First().EAN
+            ))
+        );
     }
 }
