@@ -7,6 +7,7 @@ using Microsoft.Identity.Abstractions;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 using Microsoft.IdentityModel.Tokens;
+using SwaggerThemes;
 using zKassa_Server.Models;
 using zKassa_Server.Services;
 
@@ -62,7 +63,7 @@ namespace zKassa_Server
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(SwaggerThemes.Theme.Monokai);
             }
 
             //app.UseHttpsRedirection();
