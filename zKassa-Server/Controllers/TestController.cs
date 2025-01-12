@@ -1,7 +1,9 @@
+using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
+using zKassa_Server.Attributes;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
 using zKassa_Server.Services;
@@ -53,5 +55,22 @@ public class TestController : ControllerBase
                 product.EanCodes.First().EAN
             ))
         );
+    }
+
+    [HttpGet("{EanCode}")]
+    public IActionResult GetProductInfo(string EanCode)
+    {
+        EanCode? code = _dbContext.EanCodes.FirstOrDefault(code => code.EAN == EanCode);
+        if (code == null)
+            return NotFound();
+        if (code.Product == null)
+        {
+            return StatusCode(
+                (int)HttpStatusCode.InternalServerError,
+                "Ean did not have an associated product whilst being in the system"
+            );
+        }
+        ProductInfo productInfo = new(code.Product);
+        return Ok(productInfo);
     }
 }
