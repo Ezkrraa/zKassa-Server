@@ -35,6 +35,6 @@ public class AuthenticationController : ControllerBase
         if (user == null)
             return NotFound("No such user");
         // TODO: check if user is permitted to use their drawer on that day etc.
-        return Ok(_jwtService.GenerateToken(user, _configuration));
+        return Ok(new LoginResponse(_jwtService.GenerateToken(user, _configuration), user.Role));
     }
 }
