@@ -12,6 +12,7 @@ public class ZDbContext : IdentityDbContext<Employee>
     public DbSet<ExtraPermission> CustomPermissions { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<EanCode> EanCodes { get; set; }
+    public DbSet<PriceLog> Prices { get; set; }
     public string DbPath { get; }
 
     public ZDbContext()

@@ -32,7 +32,9 @@ public class TestController : ControllerBase
     [HttpPost("NewProduct")]
     public IActionResult NewProduct([FromBody] NewProduct product)
     {
-        _dbContext.Products.Add(product.ToProduct());
+        Product newProduct = new(product);
+        _dbContext.Products.Add(newProduct);
+        _dbContext.Prices.Add(new PriceLog(newProduct.Id, newProduct.Price));
         _dbContext.SaveChanges();
         return Ok();
     }

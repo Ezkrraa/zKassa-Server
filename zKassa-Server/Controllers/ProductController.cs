@@ -50,4 +50,10 @@ public class ProductController : ControllerBase
         ProductInfo productInfo = new(code.Product);
         return Ok(productInfo);
     }
+
+    [RoleCheck(Permission.CreateProduct)]
+    [HttpPost]
+    public IActionResult CreateProduct(NewProduct product) {
+        //TODO: copy testing version
+    }
 }

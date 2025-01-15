@@ -1,0 +1,66 @@
+Project zKassa_database {
+  database_type: 'MySQL'
+  Note: 'This will store employees, transaction copies and products.'
+}
+
+
+Table employees {
+    id int [pk] // int
+    username varchar // the employee's code
+    role int 
+    store_id varchar [ref: > stores.id]
+    // location_id LATER
+}
+
+Table extra_permissions {
+    employee_id int [ref: > employees.id] // int
+    action_id int
+    Note: '''Only checked if role is insufficient for an action.'''
+}
+
+Table products {
+    id varchar [pk] // uuid
+    name varchar
+    price int // money type?
+    box_amount int
+}
+
+Table product_price_log {
+    id varchar [ref: > products.id]
+    price float
+    set_at datetime
+}
+
+Table ean_codes {
+    product_id varchar [ref: > products.id]
+    ean_code int
+}
+
+Table stores {
+    id varchar //uuid
+    store_name varchar
+    d_center_id varchar [ref: > distribution_centers.id]
+}
+
+Table distribution_centers {
+    id varchar
+}
+
+Table product_statuses {
+    product_id varchar [ref: > products.id] // uuid
+    d_center_id varchar [ref: > distribution_centers.id]
+    status int
+}
+
+// NOT YET
+
+// Table transactions {
+//     id varchar [pk] // uuid
+
+// }
+
+// Table transaction_item {
+//     price_paid 
+//     transaction_id [ref: > transaction.id]
+
+// }

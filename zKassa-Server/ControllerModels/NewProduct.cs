@@ -5,6 +5,7 @@ public class NewProduct
     public Guid Id { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
+    public uint BoxAmount { get; set; }
     public ICollection<string> EanCodes { get; set; }
 
     public NewProduct() { }
