@@ -1,9 +1,9 @@
 ﻿namespace zKassa_Server.Models;
-    public enum ProductStatus : byte
+    public enum ProductStatus
     {
-    Active = 100,
-    Passive = 200,
-    TemporarilyPassive = 300,
-    Recall = 400,
+    Active,
+    Passive,
+    TemporarilyPassive,
+    Recall,
     }
 
