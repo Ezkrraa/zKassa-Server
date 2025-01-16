@@ -32,9 +32,9 @@ public class TestController : ControllerBase
     [HttpPost("NewProduct")]
     public IActionResult NewProduct([FromBody] NewProduct product)
     {
-        Product newProduct = new(product);
+        Product newProduct = product.ToProduct();
         _dbContext.Products.Add(newProduct);
-        _dbContext.Prices.Add(new PriceLog(newProduct.Id, newProduct.Price));
+        _dbContext.PriceLogs.Add(new PriceLog(newProduct.Id, newProduct.Price));
         _dbContext.SaveChanges();
         return Ok();
     }
@@ -74,5 +74,33 @@ public class TestController : ControllerBase
         }
         ProductInfo productInfo = new(code.Product);
         return Ok(productInfo);
+    }
+
+    [HttpPost("NewShop")]
+    public IActionResult CreateShop([FromBody] NewShop newShop)
+    {
+        DistributionCenter? DistCenter = _dbContext.DistributionCenters.FirstOrDefault(center => center.Id == newShop.DistCenterId);
+        if (DistCenter == null)
+            return NotFound("No such distribution center is known");
+        if (_dbContext.Shops.Any(shop => shop.Name == newShop.ShopName))
+            return Conflict("Shop with this name already exists");
+
+        Guid shopId = Guid.NewGuid();
+        _dbContext.Shops.Add(new Shop(shopId, newShop.ShopName, DistCenter.Id));
+        _dbContext.SaveChanges();
+        return Ok(shopId);
+    }
+
+    [HttpPost("NewDistCenter")]
+    public IActionResult CreateDistCenter([FromBody] string name)
+    {
+        if (_dbContext.DistributionCenters.Any(center => center.Name == name))
+            return Conflict("Distribution center with this name already exists");
+
+        Guid distCenterGuid = Guid.NewGuid();
+        var distCenter = new DistributionCenter(distCenterGuid, name);
+        _dbContext.DistributionCenters.Add(distCenter);
+        _dbContext.SaveChanges();
+        return Ok(distCenterGuid);
     }
 }

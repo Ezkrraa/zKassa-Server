@@ -17,6 +17,8 @@ namespace zKassa_Server
     {
         public static void Main(string[] args)
         {
+            if (args.Any(arg => arg.Equals("--create-db")))
+                new Services.ZDbContext(true);
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.

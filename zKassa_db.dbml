@@ -38,12 +38,13 @@ Table ean_codes {
 
 Table stores {
     id varchar //uuid
-    store_name varchar
+    name varchar
     d_center_id varchar [ref: > distribution_centers.id]
 }
 
 Table distribution_centers {
     id varchar
+    name varchar
 }
 
 Table product_statuses {

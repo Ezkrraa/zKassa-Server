@@ -14,9 +14,10 @@ public class Product
 
     [AllowNull]
     public virtual ICollection<EanCode> EanCodes { get; set; }
-
-    public virtual ICollection<PriceLog> PriceHistory {
-    get; set; }
+    [AllowNull]
+    public virtual ICollection<PriceLog> PriceHistory { get; set; }
+    [AllowNull]
+    public virtual ICollection<ProductStatus> ProductStatuses { get; set; }
 
     public Product(Guid id, string name, decimal price, uint amountInBox)
     {
@@ -24,11 +25,6 @@ public class Product
         Name = name;
         Price = price;
         AmountInBox = amountInBox;
-    }
-
-    public Product(Guid id)
-    {
-        Id = id;
     }
 
     public Product() { }
