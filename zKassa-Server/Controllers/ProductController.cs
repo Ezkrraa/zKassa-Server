@@ -51,9 +51,10 @@ public class ProductController : ControllerBase
         return Ok(productInfo);
     }
 
+    /*
     [RoleCheck(Permission.CreateProduct)]
     [HttpPost]
     public IActionResult CreateProduct(NewProduct product) {
         //TODO: copy testing version
-    }
+    }*/
 }
