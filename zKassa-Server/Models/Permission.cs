@@ -57,14 +57,14 @@
             if (role == Role.Developer)
                 return true;
             int roleInt = (int)role;
-            int permInt = (int)perm;
+            int reqPermInt = (int)perm;
             int highestPermissionId = ((roleInt + 11) * 1000) - 1;
             if (roleInt <= 5)
                 // for store empls check if permission is below or at their level
-                return permInt >= highestPermissionId;
+                return reqPermInt > highestPermissionId;
             int lowestPermissionId = (roleInt + 10) * 1000;
             // for HQ empls only allow access to actions in their role (without inheritance)
-            return permInt >= lowestPermissionId && permInt <= highestPermissionId;
+            return reqPermInt >= lowestPermissionId && reqPermInt <= highestPermissionId;
         }
     }
 }

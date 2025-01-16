@@ -10,6 +10,7 @@ using zKassa_Server.Services;
 
 namespace zKassa_Server.Controllers;
 
+#if DEBUG
 [ApiController]
 [Route("[controller]")]
 public class TestController : ControllerBase
@@ -104,3 +105,4 @@ public class TestController : ControllerBase
         return Ok(distCenterGuid);
     }
 }
+#endif

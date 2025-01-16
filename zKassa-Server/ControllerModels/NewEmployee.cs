@@ -13,7 +13,7 @@ namespace zKassa_Server.ControllerModels
 
         public Employee ToEmployee()
         {
-            return new Employee(Guid.NewGuid().ToString(), Email, PhoneNumber, UserName, ShopId);
+            return new Employee(Guid.NewGuid().ToString(), Email, PhoneNumber, UserName, ShopId, Role);
         }
     }
 }

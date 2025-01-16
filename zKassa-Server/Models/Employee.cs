@@ -16,10 +16,10 @@ public class Employee : IdentityUser
     [AllowNull]
     public virtual Shop Shop { get; set; }
 
-    public Employee(string id, string email, string phoneNumber, string userName, Guid shopId)
+    public Employee(string id, string email, string phoneNumber, string userName, Guid shopId, Role role)
     {
         Id = id;
-        Role = 0;
+        Role = role;
         Email = email;
         PhoneNumber = phoneNumber;
         UserName = userName;
