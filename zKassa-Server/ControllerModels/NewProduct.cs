@@ -2,7 +2,6 @@
 
 public class NewProduct
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
     public uint BoxAmount { get; set; }
@@ -12,12 +11,14 @@ public class NewProduct
 
     public Models.Product ToProduct()
     {
+        Guid guid = Guid.NewGuid();
         return new Models.Product
         {
-            Id = Id,
+            Id = guid,
             Name = Name,
             Price = Price,
-            EanCodes = EanCodes.Select(i => new Models.EanCode(Id, i)).ToList(),
+            EanCodes = EanCodes.Select(i => new Models.EanCode(guid, i)).ToList(),
+            AmountInBox = BoxAmount,
         };
     }
 }

@@ -10,6 +10,7 @@ namespace zKassa_Server.ControllerModels
 
         public ProductInfo(Product product)
         {
+            Id = product.Id; 
             Name = product.Name;
             Price = product.Price;
         }

@@ -61,7 +61,7 @@
             int highestPermissionId = ((roleInt + 11) * 1000) - 1;
             if (roleInt <= 5)
                 // for store empls check if permission is below or at their level
-                return reqPermInt > highestPermissionId;
+                return reqPermInt < highestPermissionId;
             int lowestPermissionId = (roleInt + 10) * 1000;
             // for HQ empls only allow access to actions in their role (without inheritance)
             return reqPermInt >= lowestPermissionId && reqPermInt <= highestPermissionId;
