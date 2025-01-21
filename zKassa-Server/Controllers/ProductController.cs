@@ -37,6 +37,15 @@ public class ProductController : ControllerBase
     [HttpGet("{EanCode}")]
     public IActionResult GetProductInfo(string EanCode)
     {
+        int quantity = 1;
+        if (EanCode.Contains("*"))
+        {
+            if (!int.TryParse(EanCode[..EanCode.IndexOf('*')], out quantity))
+                return BadRequest("Badly formatted");
+            string ean = EanCode[(EanCode.IndexOf('*') + 1)..];
+            if (ean.Any(character => !"1234567890".Contains(character)))
+                return BadRequest("Badly formatted");
+        }
         EanCode? code = _dbContext.EanCodes.FirstOrDefault(code => code.EAN == EanCode);
         if (code == null)
             return NotFound();
@@ -47,7 +56,7 @@ public class ProductController : ControllerBase
                 "Ean did not have an associated product whilst being in the system"
             );
         }
-        ProductInfo productInfo = new(code.Product);
+        ProductInfo productInfo = new(code.Product, quantity);
         return Ok(productInfo);
     }
 
