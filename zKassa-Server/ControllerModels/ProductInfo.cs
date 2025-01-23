@@ -11,7 +11,7 @@ namespace zKassa_Server.ControllerModels
         public decimal PlasticTax { get; set; }
         public decimal SalesTax { get; set; }
 
-        public ProductInfo(Product product, int quantity)
+        public ProductInfo(Product product)
         {
             Id = product.Id;
             Name = product.Name;

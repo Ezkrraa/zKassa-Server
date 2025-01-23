@@ -15,9 +15,6 @@ public class NewProduct
     public Models.Product ToProduct()
     {
         Guid guid = Guid.NewGuid();
-        return new Models.Product(guid, Name, Price, BoxAmount, Deposit, PlasticTax, SalesTax)
-        {
-            EanCodes = EanCodes.Select(i => new Models.EanCode(guid, i)).ToList(),
-        };
+        return new Models.Product(guid, Name, Price, BoxAmount, Deposit, PlasticTax, SalesTax);
     }
 }

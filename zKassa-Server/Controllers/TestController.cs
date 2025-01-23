@@ -1,4 +1,6 @@
+using System;
 using System.Net;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +36,15 @@ public class TestController : ControllerBase
     public IActionResult NewProduct([FromBody] NewProduct product)
     {
         Product newProduct = product.ToProduct();
+        foreach (string productEan in product.EanCodes)
+        {
+            EanCode? foundEan = _dbContext.EanCodes.FirstOrDefault(code => code.EAN == productEan);
+            if (foundEan != null)
+                return Conflict(
+                    $"Found conflicting product '{foundEan.Product.Name}' with EAN '{foundEan.EAN}'"
+                );
+            _dbContext.EanCodes.Add(new EanCode(newProduct.Id, productEan));
+        }
         _dbContext.Products.Add(newProduct);
         _dbContext.PriceLogs.Add(new PriceLog(newProduct.Id, newProduct.Price));
         _dbContext.SaveChanges();
@@ -54,7 +65,7 @@ public class TestController : ControllerBase
     {
         return Ok(
             _dbContext.Products.Select(product => new Tuple<ProductInfo, string>(
-                new ProductInfo(product, 0),
+                new ProductInfo(product),
                 product.EanCodes.First().EAN
             ))
         );
@@ -80,7 +91,9 @@ public class TestController : ControllerBase
     [HttpPost("NewShop")]
     public IActionResult CreateShop([FromBody] NewShop newShop)
     {
-        DistributionCenter? DistCenter = _dbContext.DistributionCenters.FirstOrDefault(center => center.Id == newShop.DistCenterId);
+        DistributionCenter? DistCenter = _dbContext.DistributionCenters.FirstOrDefault(center =>
+            center.Id == newShop.DistCenterId
+        );
         if (DistCenter == null)
             return NotFound("No such distribution center is known");
         if (_dbContext.Shops.Any(shop => shop.Name == newShop.ShopName))
@@ -99,7 +112,7 @@ public class TestController : ControllerBase
             return Conflict("Distribution center with this name already exists");
 
         Guid distCenterGuid = Guid.NewGuid();
-        var distCenter = new DistributionCenter(distCenterGuid, name);
+        DistributionCenter distCenter = new DistributionCenter(distCenterGuid, name);
         _dbContext.DistributionCenters.Add(distCenter);
         _dbContext.SaveChanges();
         return Ok(distCenterGuid);

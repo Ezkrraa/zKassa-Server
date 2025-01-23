@@ -37,18 +37,9 @@ public class ProductController : ControllerBase
     [HttpGet("{EanCode}")]
     public IActionResult GetProductInfo(string EanCode)
     {
-        int quantity = 1;
-        if (EanCode.Contains("*"))
-        {
-            if (!int.TryParse(EanCode[..EanCode.IndexOf('*')], out quantity))
-                return BadRequest("Badly formatted");
-            string ean = EanCode[(EanCode.IndexOf('*') + 1)..];
-            if (ean.Any(character => !"1234567890".Contains(character)))
-                return BadRequest("Badly formatted");
-        }
         EanCode? code = _dbContext.EanCodes.FirstOrDefault(code => code.EAN == EanCode);
         if (code == null)
-            return NotFound();
+            return NotFound("No such item in the database");
         if (code.Product == null)
         {
             return StatusCode(
@@ -56,14 +47,27 @@ public class ProductController : ControllerBase
                 "Ean did not have an associated product whilst being in the system"
             );
         }
-        ProductInfo productInfo = new(code.Product, quantity);
+        ProductInfo productInfo = new(code.Product);
         return Ok(productInfo);
     }
 
-    /*
     [RoleCheck(Permission.CreateProduct)]
     [HttpPost]
-    public IActionResult CreateProduct(NewProduct product) {
-        //TODO: copy testing version
-    }*/
+    public IActionResult NewProduct([FromBody] NewProduct product)
+    {
+        Product newProduct = product.ToProduct();
+        foreach (string productEan in product.EanCodes)
+        {
+            EanCode? foundEan = _dbContext.EanCodes.FirstOrDefault(code => code.EAN == productEan);
+            if (foundEan != null)
+                return Conflict(
+                    $"Found conflicting product '{foundEan.Product.Name}' with EAN '{foundEan.EAN}'"
+                );
+            _dbContext.EanCodes.Add(new EanCode(newProduct.Id, productEan));
+        }
+        _dbContext.Products.Add(newProduct);
+        _dbContext.PriceLogs.Add(new PriceLog(newProduct.Id, newProduct.Price));
+        _dbContext.SaveChanges();
+        return Ok();
+    }
 }
