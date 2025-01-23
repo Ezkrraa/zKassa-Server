@@ -4,6 +4,9 @@ public class NewProduct
 {
     public string Name { get; set; }
     public decimal Price { get; set; }
+    public decimal Deposit { get; set; }
+    public decimal PlasticTax { get; set; }
+    public decimal SalesTax { get; set; }
     public uint BoxAmount { get; set; }
     public ICollection<string> EanCodes { get; set; }
 
@@ -12,13 +15,9 @@ public class NewProduct
     public Models.Product ToProduct()
     {
         Guid guid = Guid.NewGuid();
-        return new Models.Product
+        return new Models.Product(guid, Name, Price, BoxAmount, Deposit, PlasticTax, SalesTax)
         {
-            Id = guid,
-            Name = Name,
-            Price = Price,
             EanCodes = EanCodes.Select(i => new Models.EanCode(guid, i)).ToList(),
-            AmountInBox = BoxAmount,
         };
     }
 }

@@ -7,14 +7,18 @@ namespace zKassa_Server.ControllerModels
         public Guid Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        public decimal Deposit { get; set; }
+        public decimal PlasticTax { get; set; }
+        public decimal SalesTax { get; set; }
 
         public ProductInfo(Product product, int quantity)
         {
-            Id = product.Id; 
+            Id = product.Id;
             Name = product.Name;
             Price = product.Price;
-            Quantity = quantity;
+            Deposit = product.Deposit;
+            PlasticTax = product.PlasticTax;
+            SalesTax = product.SalesTax;
         }
     }
 }
