@@ -7,7 +7,7 @@ Project zKassa_database {
 Table employees {
     id int [pk] // int
     username varchar // the employee's code
-    role int 
+    role int
     store_id varchar [ref: > stores.id]
     // location_id LATER
 }
@@ -23,6 +23,9 @@ Table products {
     name varchar
     price int // money type?
     box_amount int
+    deposit double // money type, amount of deposit
+    plastic_tax double // money type, amount of deposit
+    tax_amount double // money type, amount of deposit
 }
 
 Table product_price_log {
