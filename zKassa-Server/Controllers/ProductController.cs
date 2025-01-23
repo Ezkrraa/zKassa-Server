@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web.Resource;
 using zKassa_Server.Attributes;
 using zKassa_Server.ControllerModels;
@@ -98,6 +99,25 @@ public class ProductController : ControllerBase
             new(existingProduct.Id, distributionCenter.Id, status.Status, DateTime.UtcNow)
         );
         _dbContext.SaveChanges();
+        return Ok();
+    }
+
+    [RoleCheck(Permission.UpdateProductAvailability)]
+    [HttpPatch("Recall")]
+    public async Task<IActionResult> RecallProduct([FromBody] Guid productId)
+    {
+        Product? existingProduct = _dbContext.Products.FirstOrDefault(product =>
+            product.Id == productId
+        );
+        if (existingProduct == null)
+            return NotFound("No such product in db");
+
+        await _dbContext.DistributionCenters.ForEachAsync(center =>
+            center.ProductStatuses.Add(
+                new ProductStatus(productId, center.Id, ProductStatusType.Recall, DateTime.UtcNow)
+            )
+        );
+        await _dbContext.SaveChangesAsync();
         return Ok();
     }
 
