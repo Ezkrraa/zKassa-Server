@@ -65,7 +65,7 @@ public class TestController : ControllerBase
     {
         return Ok(
             _dbContext.Products.Select(product => new Tuple<ProductInfo, string>(
-                new ProductInfo(product),
+                new ProductInfo(product, null),
                 product.EanCodes.First().EAN
             ))
         );
@@ -84,7 +84,7 @@ public class TestController : ControllerBase
                 "Ean did not have an associated product whilst being in the system"
             );
         }
-        ProductInfo productInfo = new(code.Product);
+        ProductInfo productInfo = new(code.Product, null);
         return Ok(productInfo);
     }
 

@@ -10,8 +10,9 @@ namespace zKassa_Server.ControllerModels
         public decimal Deposit { get; set; }
         public decimal PlasticTax { get; set; }
         public decimal SalesTax { get; set; }
+        public ProductStatusType? ProductStatus { get; set; }
 
-        public ProductInfo(Product product)
+        public ProductInfo(Product product, ProductStatusType? status)
         {
             Id = product.Id;
             Name = product.Name;
@@ -19,6 +20,7 @@ namespace zKassa_Server.ControllerModels
             Deposit = product.Deposit;
             PlasticTax = product.PlasticTax;
             SalesTax = product.SalesTax;
+            ProductStatus = status;
         }
     }
 }

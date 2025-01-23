@@ -47,7 +47,15 @@ public class ProductController : ControllerBase
                 "Ean did not have an associated product whilst being in the system"
             );
         }
-        ProductInfo productInfo = new(code.Product);
+        Employee currentUser = GetEmployee();
+        ProductInfo productInfo = new(
+            code.Product,
+            currentUser
+                .Shop.DistributionCenter.ProductStatuses.FirstOrDefault(status =>
+                    status.ProductId == code.ProductId
+                )
+                ?.Status
+        );
         return Ok(productInfo);
     }
 
@@ -69,5 +77,13 @@ public class ProductController : ControllerBase
         _dbContext.PriceLogs.Add(new PriceLog(newProduct.Id, newProduct.Price));
         _dbContext.SaveChanges();
         return Ok();
+    }
+
+    [NonAction]
+    private Employee GetEmployee()
+    {
+        Employee? employee = _userManager.GetUserAsync(User).GetAwaiter().GetResult();
+
+        return employee ?? throw new Exception("Unauthorized user in [Authorize] Controller???");
     }
 }
