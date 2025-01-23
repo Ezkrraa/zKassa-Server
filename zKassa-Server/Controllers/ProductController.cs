@@ -51,9 +51,10 @@ public class ProductController : ControllerBase
         ProductInfo productInfo = new(
             code.Product,
             currentUser
-                .Shop.DistributionCenter.ProductStatuses.FirstOrDefault(status =>
-                    status.ProductId == code.ProductId
+                .Shop.DistributionCenter.ProductStatuses.OrderByDescending(status =>
+                    status.TimeStamp
                 )
+                .FirstOrDefault(status => status.ProductId == code.ProductId)
                 ?.Status
         );
         return Ok(productInfo);
@@ -75,6 +76,27 @@ public class ProductController : ControllerBase
         }
         _dbContext.Products.Add(newProduct);
         _dbContext.PriceLogs.Add(new PriceLog(newProduct.Id, newProduct.Price));
+        _dbContext.SaveChanges();
+        return Ok();
+    }
+
+    [RoleCheck(Permission.UpdateProductAvailability)]
+    [HttpPatch("UpdateStatus")]
+    public IActionResult UpdateStatus([FromBody] UpdatedProductStatus status)
+    {
+        Product? existingProduct = _dbContext.Products.FirstOrDefault(product =>
+            product.Id == status.ProductId
+        );
+        if (existingProduct == null)
+            return NotFound("No product with that id in database");
+        DistributionCenter? distributionCenter = _dbContext.DistributionCenters.FirstOrDefault(
+            center => center.Id == status.DistributionCenterId
+        );
+        if (distributionCenter == null)
+            return NotFound("No such distribution center exists in database");
+        _dbContext.ProductStatuses.Add(
+            new(existingProduct.Id, distributionCenter.Id, status.Status, DateTime.UtcNow)
+        );
         _dbContext.SaveChanges();
         return Ok();
     }

@@ -44,6 +44,7 @@
         //ProductManager    18000-18999
         ChangeGlobalPrice = 18_000, // change the price of an item for all stores
         CreateProduct,
+        UpdateProductAvailability,
 
         //Developer         19000-19999
         CreateAnyAccount = 19_000, // Create an account with arbitrary properties
