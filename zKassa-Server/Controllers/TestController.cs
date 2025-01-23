@@ -84,7 +84,7 @@ public class TestController : ControllerBase
                 "Ean did not have an associated product whilst being in the system"
             );
         }
-        ProductInfo productInfo = new(code.Product, 0);
+        ProductInfo productInfo = new(code.Product);
         return Ok(productInfo);
     }
 

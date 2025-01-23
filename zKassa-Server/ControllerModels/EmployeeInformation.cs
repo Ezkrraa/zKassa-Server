@@ -9,6 +9,7 @@ namespace zKassa_Server.ControllerModels
         public Role Role { get; set; }
         public string PhoneNumber { get; set; }
         public IEnumerable<Permission> ExtraPermissionIds { get; set; }
+        public Guid StoreId { get; set; }
 
         public EmployeeInformation(Employee employee)
         {
@@ -17,6 +18,7 @@ namespace zKassa_Server.ControllerModels
             Role = employee.Role;
             PhoneNumber = employee.PhoneNumber;
             ExtraPermissionIds = employee.ExtraPermissions.Select(x => x.ActionID);
+            StoreId = employee.ShopId;
         }
     }
 }
