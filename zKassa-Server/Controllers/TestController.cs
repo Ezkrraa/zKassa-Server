@@ -55,8 +55,21 @@ public class TestController : ControllerBase
     public async Task<IActionResult> NewEmployee([FromBody] NewEmployee newEmployee)
     {
         Employee user = newEmployee.ToEmployee();
-        await _userManager.CreateAsync(user);
-        await _userManager.AddPasswordAsync(user, newEmployee.Password);
+        IdentityResult createResult = await _userManager.CreateAsync(user);
+        if (!createResult.Succeeded)
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                createResult.Errors.Select(error => error.Description)
+            );
+        IdentityResult passwordResult = await _userManager.AddPasswordAsync(
+            user,
+            newEmployee.Password
+        );
+        if (!passwordResult.Succeeded)
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                passwordResult.Errors.Select(error => error.Description)
+            );
         return Ok(user);
     }
 

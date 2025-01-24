@@ -53,7 +53,13 @@ namespace zKassa_Server
             builder.Services.AddDbContext<ZDbContext>();
 
             builder
-                .Services.AddIdentity<Employee, IdentityRole>()
+                .Services.AddIdentity<Employee, IdentityRole>(o =>
+                {
+                    o.Password.RequiredLength = 6;
+                    o.Password.RequireNonAlphanumeric = false;
+                    o.Password.RequireUppercase = false;
+                    o.Password.RequireLowercase = false;
+                })
                 .AddEntityFrameworkStores<ZDbContext>()
                 .AddUserStore<UserStore<Employee, IdentityRole, ZDbContext>>();
 
