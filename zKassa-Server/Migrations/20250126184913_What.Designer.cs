@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using zKassa_Server.Services;
 
@@ -10,9 +11,11 @@ using zKassa_Server.Services;
 namespace zKassa_Server.Migrations
 {
     [DbContext(typeof(ZDbContext))]
-    partial class ZDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250126184913_What")]
+    partial class What
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
