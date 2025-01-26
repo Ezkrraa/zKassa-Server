@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,6 +20,13 @@ namespace zKassa_Server
         {
             if (args.Any(arg => arg.Equals("--create-db")))
                 new Services.ZDbContext(true);
+            else if (args.Any(arg => arg.Equals("--seed-db")))
+            {
+                new Services.ZDbContext(false, true);
+                Console.WriteLine("Seeded database successfully");
+                return;
+            }
+
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
