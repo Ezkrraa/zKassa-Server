@@ -20,12 +20,17 @@ Table extra_permissions {
 
 Table products {
     id varchar [pk] // uuid
+    category_id varchar [ref: > categories.name]
     name varchar
     price int // money type?
     box_amount int
     deposit double // money type, amount of deposit
     plastic_tax double // money type, amount of deposit
     tax_amount double // money type, amount of deposit
+}
+
+Table categories {
+    name varchar [pk]
 }
 
 Table product_price_log {

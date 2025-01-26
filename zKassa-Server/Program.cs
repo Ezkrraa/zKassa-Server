@@ -63,6 +63,18 @@ namespace zKassa_Server
                 .AddEntityFrameworkStores<ZDbContext>()
                 .AddUserStore<UserStore<Employee, IdentityRole, ZDbContext>>();
 
+#if DEBUG
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin();
+                        policy.AllowAnyHeader();
+                    });
+            });
+#endif
+
             builder.Services.AddTransient<JwtService>();
 
             WebApplication app = builder.Build();

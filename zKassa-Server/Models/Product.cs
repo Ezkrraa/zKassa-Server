@@ -27,6 +27,11 @@ public class Product
     /// </summary>
     public decimal SalesTax { get; set; }
 
+    public string CategoryName { get; set; }
+
+    [AllowNull]
+    public virtual Category Category { get; set; }
+
     [AllowNull]
     public virtual ICollection<EanCode> EanCodes { get; set; }
 
@@ -43,7 +48,8 @@ public class Product
         uint amountInBox,
         decimal deposit,
         decimal plasticTax,
-        decimal salesTax
+        decimal salesTax,
+        string categoryName
     )
     {
         Id = id;
@@ -53,6 +59,7 @@ public class Product
         Deposit = deposit;
         PlasticTax = plasticTax;
         SalesTax = salesTax;
+        CategoryName = categoryName;
     }
 
     public Product(Guid id)

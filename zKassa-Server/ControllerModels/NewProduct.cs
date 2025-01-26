@@ -9,12 +9,13 @@ public class NewProduct
     public decimal SalesTax { get; set; }
     public uint BoxAmount { get; set; }
     public ICollection<string> EanCodes { get; set; }
+    public string CategoryName { get; set; }
 
     public NewProduct() { }
 
     public Models.Product ToProduct()
     {
         Guid guid = Guid.NewGuid();
-        return new Models.Product(guid, Name, Price, BoxAmount, Deposit, PlasticTax, SalesTax);
+        return new Models.Product(guid, Name, Price, BoxAmount, Deposit, PlasticTax, SalesTax, CategoryName);
     }
 }

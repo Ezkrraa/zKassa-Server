@@ -48,6 +48,7 @@
         GetDistCenterNames,
         CreateDistCenter,
         GetExpandedProductInfo,
+        Categories, // get and create categories
 
         //Developer         19000-19999
         CreateAnyAccount = 19_000, // Create an account with arbitrary properties

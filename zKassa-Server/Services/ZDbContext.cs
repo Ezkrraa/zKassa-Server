@@ -14,6 +14,7 @@ public class ZDbContext : IdentityDbContext<Employee>
     public DbSet<EanCode> EanCodes { get; set; }
     public DbSet<ProductStatus> ProductStatuses { get; set; }
     public DbSet<PriceLog> PriceLogs { get; set; }
+    public DbSet<Category> Categories { get; set; }
     public DbSet<Shop> Shops { get; set; }
     public DbSet<DistributionCenter> DistributionCenters { get; set; }
     public string DbPath { get; }
@@ -56,14 +57,19 @@ public class ZDbContext : IdentityDbContext<Employee>
         modelBuilder
             .Entity<Product>()
             .HasMany(product => product.PriceHistory)
-            .WithOne(code => code.Product)
+            .WithOne(log => log.Product)
             .HasPrincipalKey(product => product.Id)
-            .HasForeignKey(code => code.ProductId);
+            .HasForeignKey(log => log.ProductId);
         modelBuilder.Entity<Product>()
             .HasMany(product => product.ProductStatuses)
             .WithOne(code => code.Product)
             .HasPrincipalKey(product => product.Id)
             .HasForeignKey(code => code.ProductId);
+        modelBuilder.Entity<Product>()
+            .HasOne(product => product.Category)
+            .WithMany(category => category.Products)
+            .HasPrincipalKey(category => category.Name)
+            .HasForeignKey(product => product.CategoryName);
 
         modelBuilder
             .Entity<DistributionCenter>()

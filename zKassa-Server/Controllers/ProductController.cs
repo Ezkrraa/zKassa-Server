@@ -75,17 +75,7 @@ public class ProductController : ControllerBase
                 "Ean did not have an associated product whilst being in the system"
             );
         }
-        Employee currentUser = GetEmployee();
-        return Ok(new
-        {
-            code.Product.Id,
-            code.Product.Name,
-            code.Product.Price,
-            code.Product.Deposit,
-            code.Product.PlasticTax,
-            code.Product.SalesTax,
-            Codes = code.Product.EanCodes.Select(code => code.EAN)
-        });
+        return Ok(new ExpandedProductInfo(code.Product));
     }
 
     [RoleCheck(Permission.CreateProduct)]
@@ -102,6 +92,10 @@ public class ProductController : ControllerBase
                 );
             _dbContext.EanCodes.Add(new EanCode(newProduct.Id, productEan));
         }
+
+        if (!_dbContext.Categories.Any(cat => cat.Name == newProduct.CategoryName))
+            return BadRequest("Category does not exist");
+
         _dbContext.Products.Add(newProduct);
         _dbContext.PriceLogs.Add(new PriceLog(newProduct.Id, newProduct.Price));
         _dbContext.SaveChanges();
