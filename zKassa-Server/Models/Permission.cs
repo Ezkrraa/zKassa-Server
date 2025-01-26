@@ -46,7 +46,7 @@
         CreateProduct,
         UpdateProductAvailability,
         GetDistCenterNames,
-        GetDistCenterInfo,
+        CreateDistCenter,
         GetExpandedProductInfo,
 
         //Developer         19000-19999
