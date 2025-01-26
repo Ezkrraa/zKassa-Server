@@ -61,6 +61,33 @@ public class ProductController : ControllerBase
         return Ok(productInfo);
     }
 
+    [RoleCheck(Permission.GetExpandedProductInfo)]
+    [HttpGet("Expanded/{EanCode}")]
+    public IActionResult GetExpandedInfo(string EanCode)
+    {
+        EanCode? code = _dbContext.EanCodes.FirstOrDefault(code => code.EAN == EanCode);
+        if (code == null)
+            return NotFound("No such item in the database");
+        if (code.Product == null)
+        {
+            return StatusCode(
+                (int)HttpStatusCode.InternalServerError,
+                "Ean did not have an associated product whilst being in the system"
+            );
+        }
+        Employee currentUser = GetEmployee();
+        return Ok(new
+        {
+            code.Product.Id,
+            code.Product.Name,
+            code.Product.Price,
+            code.Product.Deposit,
+            code.Product.PlasticTax,
+            code.Product.SalesTax,
+            Codes = code.Product.EanCodes.Select(code => code.EAN)
+        });
+    }
+
     [RoleCheck(Permission.CreateProduct)]
     [HttpPost]
     public IActionResult NewProduct([FromBody] NewProduct product)
