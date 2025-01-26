@@ -9,7 +9,7 @@ namespace zKassa_Server.ControllerModels
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public Role Role { get; set; }
-        public Guid ShopId { get; set; }
+        public Guid? ShopId { get; set; }
 
         public Employee ToEmployee()
         {

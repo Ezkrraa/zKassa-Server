@@ -9,7 +9,7 @@ namespace zKassa_Server.ControllerModels
         public Role Role { get; set; }
         public string PhoneNumber { get; set; }
         public IEnumerable<Permission> ExtraPermissionIds { get; set; }
-        public Guid StoreId { get; set; }
+        public Guid? StoreId { get; set; }
 
         public EmployeeInformation(Employee employee)
         {
