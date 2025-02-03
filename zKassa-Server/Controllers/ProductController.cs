@@ -51,7 +51,11 @@ public class ProductController : ControllerBase
         Employee currentUser = GetEmployee();
         ProductInfo productInfo = new(
             code.Product,
-            code.Product.ProductStatuses.OrderByDescending(data => data.TimeStamp).First().Status
+            code.Product.ProductStatuses
+            .OrderByDescending(data => data.TimeStamp)
+            .Where(item => item.DistributionCenterId == currentUser.Shop?.DistributionId)
+            .First()
+            .Status
         );
         return Ok(productInfo);
     }
