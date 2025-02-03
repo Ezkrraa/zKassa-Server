@@ -113,16 +113,13 @@ public class TestController : ControllerBase
     [HttpPost("NewShop")]
     public IActionResult CreateShop([FromBody] NewShop newShop)
     {
-        DistributionCenter? DistCenter = _dbContext.DistributionCenters.FirstOrDefault(center =>
-            center.Id == newShop.DistCenterId
-        );
-        if (DistCenter == null)
+        if (!_dbContext.DistributionCenters.Any(center => center.Id == newShop.DistCenterId))
             return NotFound("No such distribution center is known");
         if (_dbContext.Shops.Any(shop => shop.Name == newShop.ShopName))
             return Conflict("Shop with this name already exists");
 
         Guid shopId = Guid.NewGuid();
-        _dbContext.Shops.Add(new Shop(shopId, newShop.ShopName, DistCenter.Id));
+        _dbContext.Shops.Add(new Shop(shopId, newShop.ShopName, newShop.DistCenterId));
         _dbContext.SaveChanges();
         return Ok(shopId);
     }
@@ -143,8 +140,7 @@ public class TestController : ControllerBase
     [HttpPost("NewCategory")]
     public IActionResult Create([FromBody] string name)
     {
-        Category? existingCat = _dbContext.Categories.FirstOrDefault(c => c.Name == name);
-        if (existingCat != null)
+        if (_dbContext.Categories.Any(cat => cat.Name == name))
             Conflict("Category already exists");
         _dbContext.Categories.Add(new(name));
         _dbContext.SaveChanges();

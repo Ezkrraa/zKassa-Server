@@ -51,12 +51,7 @@ public class ProductController : ControllerBase
         Employee currentUser = GetEmployee();
         ProductInfo productInfo = new(
             code.Product,
-            currentUser
-                .Shop.DistributionCenter.ProductStatuses.OrderByDescending(status =>
-                    status.TimeStamp
-                )
-                .FirstOrDefault(status => status.ProductId == code.ProductId)
-                ?.Status
+            code.Product.ProductStatuses.OrderByDescending(data => data.TimeStamp).First().Status
         );
         return Ok(productInfo);
     }
@@ -106,18 +101,13 @@ public class ProductController : ControllerBase
     [HttpPatch("UpdateStatus")]
     public IActionResult UpdateStatus([FromBody] UpdatedProductStatus status)
     {
-        Product? existingProduct = _dbContext.Products.FirstOrDefault(product =>
-            product.Id == status.ProductId
-        );
-        if (existingProduct == null)
+        if (!_dbContext.Products.Any(product => product.Id == status.ProductId))
             return NotFound("No product with that id in database");
-        DistributionCenter? distributionCenter = _dbContext.DistributionCenters.FirstOrDefault(
-            center => center.Id == status.DistributionCenterId
-        );
-        if (distributionCenter == null)
+        if (!_dbContext.DistributionCenters.Any(center => center.Id == status.DistributionCenterId))
             return NotFound("No such distribution center exists in database");
+
         _dbContext.ProductStatuses.Add(
-            new(existingProduct.Id, distributionCenter.Id, status.Status, DateTime.UtcNow)
+            new(status.ProductId, status.DistributionCenterId, status.Status, DateTime.UtcNow)
         );
         _dbContext.SaveChanges();
         return Ok();
@@ -127,10 +117,7 @@ public class ProductController : ControllerBase
     [HttpPatch("Recall")]
     public async Task<IActionResult> RecallProduct([FromBody] Guid productId)
     {
-        Product? existingProduct = _dbContext.Products.FirstOrDefault(product =>
-            product.Id == productId
-        );
-        if (existingProduct == null)
+        if (!_dbContext.Products.Any(product => product.Id == productId))
             return NotFound("No such product in db");
 
         await _dbContext.DistributionCenters.ForEachAsync(center =>

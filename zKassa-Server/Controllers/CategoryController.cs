@@ -31,8 +31,7 @@ namespace zKassa_Server.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] string name)
         {
-            Category? existingCat = _dbContext.Categories.FirstOrDefault(c => c.Name == name);
-            if (existingCat != null)
+            if (_dbContext.Categories.Any(c => c.Name == name))
                 Conflict("Category already exists");
             _dbContext.Categories.Add(new(name));
             _dbContext.SaveChanges();
