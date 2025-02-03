@@ -139,5 +139,16 @@ public class TestController : ControllerBase
         _dbContext.SaveChanges();
         return Ok(distCenterGuid);
     }
+
+    [HttpPost("NewCategory")]
+    public IActionResult Create([FromBody] string name)
+    {
+        Category? existingCat = _dbContext.Categories.FirstOrDefault(c => c.Name == name);
+        if (existingCat != null)
+            Conflict("Category already exists");
+        _dbContext.Categories.Add(new(name));
+        _dbContext.SaveChanges();
+        return Ok();
+    }
 }
 #endif
