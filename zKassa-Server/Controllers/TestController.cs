@@ -45,6 +45,10 @@ public class TestController : ControllerBase
                 );
             _dbContext.EanCodes.Add(new EanCode(newProduct.Id, productEan));
         }
+
+        if (!_dbContext.Categories.Any(cat => cat.Name == newProduct.CategoryName))
+            return BadRequest("Category does not exist");
+
         _dbContext.Products.Add(newProduct);
         _dbContext.PriceLogs.Add(new PriceLog(newProduct.Id, newProduct.Price));
         _dbContext.SaveChanges();
