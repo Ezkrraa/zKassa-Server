@@ -73,6 +73,15 @@ public class ProductController : ControllerBase
         return Ok(new ExpandedProductInfo(code.Product));
     }
 
+    [HttpGet("{categoryName}")]
+    public ActionResult<IEnumerable<ProductInfo>> GetByCategory(string CategoryName)
+    {
+        Category? category = _dbContext.Categories.FirstOrDefault(cat => cat.Name == CategoryName);
+        if (category == null)
+            return BadRequest("No such category is known");
+        return Ok(category.Products.Select(item => new ProductInfo(item)));
+    }
+
     [RoleCheck(Permission.CreateProduct)]
     [HttpPost]
     public IActionResult NewProduct([FromBody] NewProduct product)
