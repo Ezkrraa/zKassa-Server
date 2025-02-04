@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Numerics;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using zKassa_Server.Attributes;
@@ -30,8 +31,8 @@ namespace zKassa_Server.Controllers
         }
 
         [RoleCheck(Permission.Categories)]
-        [HttpPost]
-        public IActionResult Create([FromBody] string name)
+        [HttpPost("{name}")]
+        public IActionResult Create(string name)
         {
             if (_dbContext.Categories.Any(c => c.Name == name))
                 Conflict("Category already exists");
