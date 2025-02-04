@@ -51,11 +51,11 @@ public class ProductController : ControllerBase
         Employee currentUser = GetEmployee();
         ProductInfo productInfo = new(
             code.Product,
-            code.Product.ProductStatuses
-            .OrderByDescending(data => data.TimeStamp)
-            .Where(item => item.DistributionCenterId == currentUser.Shop?.DistributionId)
-            .First()
-            .Status
+            code.Product.ProductStatuses.Where(item =>
+                    item.DistributionCenterId == currentUser.Shop?.DistributionId
+                )
+                .First()
+                .Status
         );
         return Ok(productInfo);
     }
@@ -75,15 +75,6 @@ public class ProductController : ControllerBase
             );
         }
         return Ok(new ExpandedProductInfo(code.Product));
-    }
-
-    [HttpGet("{categoryName}")]
-    public ActionResult<IEnumerable<ProductInfo>> GetByCategory(string CategoryName)
-    {
-        Category? category = _dbContext.Categories.FirstOrDefault(cat => cat.Name == CategoryName);
-        if (category == null)
-            return BadRequest("No such category is known");
-        return Ok(category.Products.Select(item => new ProductInfo(item)));
     }
 
     [RoleCheck(Permission.CreateProduct)]

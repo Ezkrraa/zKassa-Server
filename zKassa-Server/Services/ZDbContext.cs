@@ -34,7 +34,7 @@ public class ZDbContext : IdentityDbContext<Employee>
         }
         else if (seedDatabase)
         {
-            using (var dbContext = new ZDbContext())
+            using (ZDbContext dbContext = new())
             {
                 dbContext.Database.Migrate();
 
@@ -42,31 +42,39 @@ public class ZDbContext : IdentityDbContext<Employee>
                 dbContext.DistributionCenters.Add(new(distCenterId, "Zuid-Holland"));
                 Guid shopId = Guid.NewGuid();
                 dbContext.Shops.Add(new(shopId, "Hellevoetsluis", distCenterId));
-                dbContext.Categories.Add(new("Fruit & Veg"));
-                dbContext.Categories.Add(new("Drinks"));
+                Category Fruit = new("Fruit & Veg");
+                Category Drinks = new("Drinks");
+                dbContext.Categories.Add(Fruit);
+                dbContext.Categories.Add(Drinks);
 
                 Guid guid1 = Guid.NewGuid();
-                dbContext.Products.Add(new(Guid.NewGuid(), "Tomato", 0.15m, 12, 0m, 0m, 0.12m, "Fruit & Veg"));
+                dbContext.Products.Add(new(guid1, "Tomato", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name));
                 dbContext.EanCodes.Add(new(guid1, "0"));
                 dbContext.PriceLogs.Add(new(guid1, 0.15m, DateTime.UtcNow));
 
                 Guid guid2 = Guid.NewGuid();
-                dbContext.Products.Add(new(Guid.NewGuid(), "Potato", 0.15m, 12, 0m, 0m, 0.12m, "Fruit & Veg"));
+                dbContext.Products.Add(new(guid2, "Potato", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name));
                 dbContext.EanCodes.Add(new(guid2, "01"));
                 dbContext.PriceLogs.Add(new(guid2, 0.15m, DateTime.UtcNow));
 
                 Guid guid3 = Guid.NewGuid();
-                dbContext.Products.Add(new(Guid.NewGuid(), "Cucumber", 0.15m, 12, 0m, 0m, 0.12m, "Fruit & Veg"));
+                dbContext.Products.Add(
+                    new(guid3, "Cucumber", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name)
+                );
                 dbContext.EanCodes.Add(new(guid3, "012"));
                 dbContext.PriceLogs.Add(new(guid3, 0.15m, DateTime.UtcNow));
 
                 Guid guid4 = Guid.NewGuid();
-                dbContext.Products.Add(new(Guid.NewGuid(), "Monster Energy", 0.99m, 24, 0.15m, 0m, 0.24m, "Drinks"));
+                dbContext.Products.Add(
+                    new(guid4, "Monster Energy", 0.99m, 24, 0.15m, 0m, 0.24m, Drinks.Name)
+                );
                 dbContext.EanCodes.Add(new(guid4, "0123"));
                 dbContext.PriceLogs.Add(new(guid4, 0.99m, DateTime.UtcNow));
 
                 Guid guid5 = Guid.NewGuid();
-                dbContext.Products.Add(new(Guid.NewGuid(), "Knockoff Monster Energy", 0.69m, 12, 0.15m, 0.01m, 0.24m, "Drinks"));
+                dbContext.Products.Add(
+                    new(guid5, "Fake Monster", 0.69m, 12, 0.15m, 0.01m, 0.24m, Drinks.Name)
+                );
                 dbContext.EanCodes.Add(new(guid5, "01234"));
                 dbContext.PriceLogs.Add(new(guid5, 0.69m, DateTime.UtcNow));
 
@@ -103,12 +111,14 @@ public class ZDbContext : IdentityDbContext<Employee>
             .WithOne(log => log.Product)
             .HasPrincipalKey(product => product.Id)
             .HasForeignKey(log => log.ProductId);
-        modelBuilder.Entity<Product>()
+        modelBuilder
+            .Entity<Product>()
             .HasMany(product => product.ProductStatuses)
             .WithOne(code => code.Product)
             .HasPrincipalKey(product => product.Id)
             .HasForeignKey(code => code.ProductId);
-        modelBuilder.Entity<Product>()
+        modelBuilder
+            .Entity<Product>()
             .HasOne(product => product.Category)
             .WithMany(category => category.Products)
             .HasPrincipalKey(category => category.Name)
