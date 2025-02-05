@@ -35,22 +35,34 @@ namespace zKassa_Server.Controllers
         public IActionResult Create(string name)
         {
             if (_dbContext.Categories.Any(c => c.Name == name))
-                Conflict("Category already exists");
+                return Conflict("Category already exists");
             _dbContext.Categories.Add(new(name));
             _dbContext.SaveChanges();
             return Ok();
         }
 
         [RoleCheck(Permission.Categories)]
-        [HttpGet("{categoryName}")]
-        public ActionResult<IEnumerable<ProductInfo>> GetByCategory(string CategoryName)
+        [HttpGet("{name}")]
+        public ActionResult<IEnumerable<ProductInfo>> GetByCategory(string name)
         {
-            Category? category = _dbContext.Categories.FirstOrDefault(cat =>
-                cat.Name == CategoryName
-            );
+            Category? category = _dbContext.Categories.FirstOrDefault(cat => cat.Name == name);
             if (category == null)
-                return BadRequest("No such category is known");
+                return NotFound("No such category is known");
             return Ok(category.Products.Select(product => new ProductInfo(product)));
+        }
+
+        [RoleCheck(Permission.Categories)]
+        [HttpDelete("{name}")]
+        public IActionResult Delete(string name)
+        {
+            Category? category = _dbContext.Categories.FirstOrDefault(cat => cat.Name == name);
+            if (category == null)
+                return NotFound("No such category is known");
+            if (category.Products.Any())
+                return BadRequest(category.Products.Select(item => item.Name));
+            _dbContext.Remove(category);
+            _dbContext.SaveChanges();
+            return NoContent();
         }
     }
 }
