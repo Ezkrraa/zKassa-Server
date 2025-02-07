@@ -27,7 +27,7 @@ namespace zKassa_Server.Controllers
         [HttpGet]
         public IEnumerable<string> GetAll()
         {
-            return _dbContext.Categories.Select(cat => cat.Name);
+            return _dbContext.Categories.Select(cat => cat.Name).Order();
         }
 
         [RoleCheck(Permission.Categories)]
