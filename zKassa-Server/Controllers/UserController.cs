@@ -31,8 +31,26 @@ namespace zKassa_Server.Controllers
         public async Task<IActionResult> CreateEmployee([FromBody] NewEmployee newEmployee)
         {
             Employee user = newEmployee.ToEmployee();
-            await _userManager.CreateAsync(user);
-            await _userManager.AddPasswordAsync(user, newEmployee.Password);
+            if (newEmployee.Role <= Role.Manager && newEmployee.ShopId == null)
+                return BadRequest("ShopId cannot be null for non-HQ employees");
+            else if (newEmployee.Role >= Role.Admin && newEmployee.ShopId != null)
+                return BadRequest("ShopId must be null for HQ employees");
+
+            IdentityResult createResult = await _userManager.CreateAsync(user);
+            if (!createResult.Succeeded)
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    createResult.Errors.Select(error => error.Description)
+                );
+            IdentityResult passwordResult = await _userManager.AddPasswordAsync(
+                user,
+                newEmployee.Password
+            );
+            if (!passwordResult.Succeeded)
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    passwordResult.Errors.Select(error => error.Description)
+                );
             return Ok(user);
         }
 
