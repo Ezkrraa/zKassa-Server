@@ -41,6 +41,8 @@ namespace zKassa_Server.Controllers
                     "Should not be permitted to access this controller without associating with a shop"
                 );
             Transaction transaction = newTransaction.ToTransaction(storeId);
+            // filter duplicates out for easy testing
+            transaction.TransactionItems = transaction.TransactionItems.Distinct().ToList();
             _dbContext.Transactions.Add(transaction);
             _dbContext.SaveChanges();
             return Ok(transaction.Id);
