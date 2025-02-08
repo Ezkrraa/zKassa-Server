@@ -15,7 +15,7 @@
             return new Models.Transaction(id, storeId)
             {
                 TransactionItems = Items
-                    .Select(item => new Models.TransactionItem(id, item.ProductId))
+                    .Select(item => new Models.TransactionItem(id, item.ProductId, item.PricePaid))
                     .ToList(),
             };
         }
