@@ -31,8 +31,8 @@ namespace zKassa_Server.Controllers
         public ActionResult<Guid> CreateTransaction([FromBody] NewTransaction newTransaction)
         {
             // TODO: add reasoning for clarity
-            if (!newTransaction.IsValid())
-                return BadRequest();
+            //if (!newTransaction.IsValid())
+            //    return BadRequest();
 
             Employee user = GetEmployee();
             Guid storeId =
@@ -42,6 +42,7 @@ namespace zKassa_Server.Controllers
                 );
             Transaction transaction = newTransaction.ToTransaction(storeId);
             _dbContext.Transactions.Add(transaction);
+            _dbContext.TransactionItems.AddRange(transaction.TransactionItems);
             _dbContext.SaveChanges();
             return Ok(transaction.Id);
         }
