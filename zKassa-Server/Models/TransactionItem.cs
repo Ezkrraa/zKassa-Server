@@ -9,6 +9,7 @@ namespace zKassa_Server.Models
         public Guid TransactionId { get; set; }
         public Guid ProductId { get; set; }
         public decimal PaidPrice { get; set; }
+        public int Quantity { get; set; }
 
         [AllowNull]
         public virtual Transaction Transaction { get; set; }
@@ -16,11 +17,12 @@ namespace zKassa_Server.Models
         [AllowNull]
         public virtual Product Product { get; set; }
 
-        public TransactionItem(Guid transactionId, Guid productId, decimal paidPrice)
+        public TransactionItem(Guid transactionId, Guid productId, decimal paidPrice, int quantity)
         {
             TransactionId = transactionId;
             ProductId = productId;
             PaidPrice = paidPrice;
+            Quantity = quantity;
         }
     }
 }
