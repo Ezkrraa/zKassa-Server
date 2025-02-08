@@ -42,7 +42,6 @@ namespace zKassa_Server.Controllers
                 );
             Transaction transaction = newTransaction.ToTransaction(storeId);
             _dbContext.Transactions.Add(transaction);
-            _dbContext.TransactionItems.AddRange(transaction.TransactionItems);
             _dbContext.SaveChanges();
             return Ok(transaction.Id);
         }
