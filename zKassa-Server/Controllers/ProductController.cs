@@ -49,15 +49,16 @@ public class ProductController : ControllerBase
             );
         }
         Employee currentUser = GetEmployee();
-        ProductInfo productInfo = new(
-            code.Product,
-            code.Product.ProductStatuses.Where(item =>
-                    item.DistributionCenterId == currentUser.Shop?.DistributionId
-                )
-                .First()
-                .Status
+        ProductStatus? productInfo = code.Product.ProductStatuses.FirstOrDefault(item =>
+            item.DistributionCenterId == currentUser.Shop?.DistributionId
         );
-        return Ok(productInfo);
+
+        return Ok(
+            new ProductInfo(
+                code.Product,
+                productInfo == null ? ProductStatusType.Passive : productInfo.Status
+            )
+        );
     }
 
     [RoleCheck(Permission.GetExpandedProductInfo)]
