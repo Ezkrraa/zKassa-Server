@@ -14,6 +14,9 @@ public class Shop
     [AllowNull]
     public virtual ICollection<Employee>? Employees { get; set; }
 
+    [AllowNull]
+    public virtual ICollection<Transaction>? Transactions { get; set; }
+
     public Shop(Guid id, string name, Guid distributionId)
     {
         Id = id;

@@ -41,6 +41,9 @@ public class Product
     [AllowNull]
     public virtual ICollection<ProductStatus> ProductStatuses { get; set; }
 
+    [AllowNull]
+    public virtual ICollection<TransactionItem>? TransactionItems { get; set; }
+
     public Product(
         Guid id,
         string name,

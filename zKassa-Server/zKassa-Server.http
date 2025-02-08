@@ -1,6 +1,21 @@
-@zKassa_Server_HostAddress = http://localhost:5267
+@zKassa_Server_HostAddress = http://localhost:7132
+ 
 
-GET {{zKassa_Server_HostAddress}}/weatherforecast/
+### CREATE ADMIN
+POST {{zKassa_Server_HostAddress}}/Test/NewAccount
+Authorization: Bearer {{$bearerToken}}
+Content-Type: application/json
+Accept: application/json
+{
+	"UserName": "AdminUser",
+	"Password": "012345678",
+	"Email": "TestEmail@example.com",
+	"PhoneNumber": "012345678",
+	"Role": 9,
+	"shopId": null
+}
+### 
+GET {{zKassa_Server_HostAddress}}/Product/01234
 Accept: application/json
 
-###
+### Expected: 401 unauthorized

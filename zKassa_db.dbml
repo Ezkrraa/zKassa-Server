@@ -1,5 +1,5 @@
 Project zKassa_database {
-  database_type: 'MySQL'
+  database_type: 'SQLite'
   Note: 'This will store employees, transaction copies and products.'
 }
 
@@ -59,17 +59,34 @@ Table product_statuses {
     product_id varchar [ref: > products.id] // uuid
     d_center_id varchar [ref: > distribution_centers.id]
     status int
+    set_at timestamp
 }
 
-// NOT YET
+Table transaction_items {
+    product_id varchar [ref: > products.id] // uuid
+    transaction_id varchar [ref: > transactions.id] // uuid
+    price_paid float
+    quantity int
+}
 
-// Table transactions {
-//     id varchar [pk] // uuid
+Table transactions {
+    id varchar [pk]
+    store_id varchar [ref: > stores.id]
+    sold_at timestamp
+    paid_at timestamp
+}
 
-// }
 
-// Table transaction_item {
-//     price_paid 
-//     transaction_id [ref: > transaction.id]
+// points to an item in transaction_items that was returned
+Table returned_items {
+    return_transaction_id varchar [ref: > return_transactions.id]
+    transaction_item_id varchar [ref: - transaction_items.product_id]
+    return_reason int // enum??
+}
 
-// }
+Table return_transactions {
+    id varchar [pk]
+    transaction_id varchar [ref: > transactions.id] // the transaction we're returning from
+    returned_at timestamp
+    transaction_finished bool
+}

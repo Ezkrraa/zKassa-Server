@@ -19,7 +19,11 @@ namespace zKassa_Server
         public static void Main(string[] args)
         {
             if (args.Any(arg => arg.Equals("--create-db")))
+            {
                 new Services.ZDbContext(true);
+                Console.WriteLine("Created database successfully");
+                return;
+            }
             else if (args.Any(arg => arg.Equals("--seed-db")))
             {
                 new Services.ZDbContext(false, true);
@@ -74,12 +78,11 @@ namespace zKassa_Server
 #if DEBUG
             builder.Services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
-                    policy =>
-                    {
-                        policy.AllowAnyOrigin();
-                        policy.AllowAnyHeader();
-                    });
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin();
+                    policy.AllowAnyHeader();
+                });
             });
 #endif
 

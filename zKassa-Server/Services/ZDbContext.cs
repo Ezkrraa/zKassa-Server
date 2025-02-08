@@ -18,6 +18,8 @@ public class ZDbContext : IdentityDbContext<Employee>
     public DbSet<Category> Categories { get; set; }
     public DbSet<Shop> Shops { get; set; }
     public DbSet<DistributionCenter> DistributionCenters { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<TransactionItem> TransactionItems { get; set; }
     public string DbPath { get; }
 
     public ZDbContext(bool createMigration = false, bool seedDatabase = false)
@@ -143,6 +145,26 @@ public class ZDbContext : IdentityDbContext<Employee>
             .WithOne(employee => employee.Shop)
             .HasPrincipalKey(shop => shop.Id)
             .HasForeignKey(employee => employee.ShopId);
+        modelBuilder
+            .Entity<Shop>()
+            .HasMany(shop => shop.Transactions)
+            .WithOne(transaction => transaction.Shop)
+            .HasPrincipalKey(shop => shop.Id)
+            .HasForeignKey(transaction => transaction.ShopId);
+
+        modelBuilder
+            .Entity<Transaction>()
+            .HasMany(transaction => transaction.TransactionItems)
+            .WithOne(item => item.Transaction)
+            .HasPrincipalKey(transaction => transaction.Id)
+            .HasForeignKey(item => item.TransactionId);
+
+        modelBuilder
+            .Entity<TransactionItem>()
+            .HasOne(item => item.Product)
+            .WithMany(product => product.TransactionItems)
+            .HasPrincipalKey(product => product.Id)
+            .HasForeignKey(item => item.ProductId);
 
         base.OnModelCreating(modelBuilder);
     }
