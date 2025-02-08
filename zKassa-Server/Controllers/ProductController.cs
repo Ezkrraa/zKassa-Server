@@ -99,7 +99,7 @@ public class ProductController : ControllerBase
         _dbContext.Products.Add(newProduct);
         _dbContext.PriceLogs.Add(new PriceLog(newProduct.Id, newProduct.Price));
         _dbContext.SaveChanges();
-        return Ok();
+        return Ok(newProduct.Id);
     }
 
     [RoleCheck(Permission.UpdateProductAvailability)]

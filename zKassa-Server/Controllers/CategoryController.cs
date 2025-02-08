@@ -35,7 +35,7 @@ namespace zKassa_Server.Controllers
         public IActionResult Create(string name)
         {
             if (_dbContext.Categories.Any(c => c.Name == name))
-                return Conflict("Category already exists");
+                return Conflict($"Category '{name}' already exists");
             _dbContext.Categories.Add(new(name));
             _dbContext.SaveChanges();
             return Ok();
