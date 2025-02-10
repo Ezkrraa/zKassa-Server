@@ -23,6 +23,7 @@
         ServiceLogin = 13_000,
         HandleReturn,
         CustomerOrder,
+        GetTransactionInfo,
 
         //TeamLead          14000-14999
         StockOrder = 14_000,

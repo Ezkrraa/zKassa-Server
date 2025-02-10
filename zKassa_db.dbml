@@ -63,6 +63,7 @@ Table product_statuses {
 }
 
 Table transaction_items {
+    id varchar [pk]
     product_id varchar [ref: > products.id] // uuid
     transaction_id varchar [ref: > transactions.id] // uuid
     price_paid float
@@ -77,16 +78,16 @@ Table transactions {
 }
 
 
-// points to an item in transaction_items that was returned
-Table returned_items {
-    return_transaction_id varchar [ref: > return_transactions.id]
-    transaction_item_id varchar [ref: - transaction_items.product_id]
-    return_reason int // enum??
-}
+// // points to an item in transaction_items that was returned
+// Table returned_items {
+//     return_transaction_id varchar [ref: > return_transactions.id]
+//     transaction_item_id varchar [ref: - transaction_items.product_id]
+//     return_reason int // enum??
+// }
 
-Table return_transactions {
-    id varchar [pk]
-    transaction_id varchar [ref: > transactions.id] // the transaction we're returning from
-    returned_at timestamp
-    transaction_finished bool
-}
+// Table return_transactions {
+//     id varchar [pk]
+//     transaction_id varchar [ref: > transactions.id] // the transaction we're returning from
+//     returned_at timestamp
+//     transaction_finished bool
+// }

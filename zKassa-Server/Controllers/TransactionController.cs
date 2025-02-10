@@ -42,10 +42,27 @@ namespace zKassa_Server.Controllers
                 );
             Transaction transaction = newTransaction.ToTransaction(storeId);
             // filter duplicates out for easy testing
-            transaction.TransactionItems = transaction.TransactionItems.Distinct().ToList();
             _dbContext.Transactions.Add(transaction);
             _dbContext.SaveChanges();
             return Ok(transaction.Id);
+        }
+
+        [RoleCheck(Permission.GetTransactionInfo)]
+        [HttpGet]
+        public ActionResult<TransactionInfo> GetInfo([FromQuery] Guid id)
+        {
+            Employee user = GetEmployee();
+            Shop store =
+                user.Shop
+                ?? throw new Exception(
+                    "Should not be permitted to access this controller without associating with a shop"
+                );
+            if (user.Shop.Transactions == null)
+                return NotFound("No such transaction is known");
+            Transaction? item = user.Shop?.Transactions?.FirstOrDefault(item => item.Id == id);
+            if (item == null)
+                return NotFound("No such transaction is known");
+            return new TransactionInfo(item);
         }
 
         [NonAction]

@@ -3,9 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace zKassa_Server.Models
 {
-    [PrimaryKey(nameof(TransactionId), nameof(ProductId))]
+    [PrimaryKey(nameof(Id))]
     public class TransactionItem
     {
+        public Guid Id { get; set; }
         public Guid TransactionId { get; set; }
         public Guid ProductId { get; set; }
         public decimal PaidPrice { get; set; }
@@ -17,8 +18,15 @@ namespace zKassa_Server.Models
         [AllowNull]
         public virtual Product Product { get; set; }
 
-        public TransactionItem(Guid transactionId, Guid productId, decimal paidPrice, int quantity)
+        public TransactionItem(
+            Guid id,
+            Guid transactionId,
+            Guid productId,
+            decimal paidPrice,
+            int quantity
+        )
         {
+            Id = id;
             TransactionId = transactionId;
             ProductId = productId;
             PaidPrice = paidPrice;

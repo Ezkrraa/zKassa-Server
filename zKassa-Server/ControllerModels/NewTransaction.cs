@@ -16,6 +16,7 @@
             {
                 TransactionItems = Items
                     .Select(item => new Models.TransactionItem(
+                        Guid.NewGuid(),
                         id,
                         item.ProductId,
                         item.PricePaid,
