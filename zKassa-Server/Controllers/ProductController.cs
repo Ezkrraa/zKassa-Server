@@ -1,12 +1,10 @@
 ﻿using System.Net;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web.Resource;
 using zKassa_Server.Attributes;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
@@ -34,6 +32,7 @@ public class ProductController : ControllerBase
         _dbContext = dbContext;
     }
 
+    [EnableRateLimiting(Program.fastLimitName)]
     [RoleCheck(Permission.GetProductInfo)]
     [HttpGet("{EanCode}")]
     public IActionResult GetProductInfo(string EanCode)
@@ -61,6 +60,7 @@ public class ProductController : ControllerBase
         );
     }
 
+    [EnableRateLimiting(Program.slowLimitName)]
     [RoleCheck(Permission.GetExpandedProductInfo)]
     [HttpGet("Expanded/{EanCode}")]
     public IActionResult GetExpandedInfo(string EanCode)
@@ -78,6 +78,7 @@ public class ProductController : ControllerBase
         return Ok(new ExpandedProductInfo(code.Product));
     }
 
+    [EnableRateLimiting(Program.slowLimitName)]
     [RoleCheck(Permission.CreateProduct)]
     [HttpPost]
     public IActionResult NewProduct([FromBody] NewProduct product)
@@ -102,6 +103,7 @@ public class ProductController : ControllerBase
         return Ok(newProduct.Id);
     }
 
+    [EnableRateLimiting(Program.slowLimitName)]
     [RoleCheck(Permission.UpdateProductAvailability)]
     [HttpPatch("UpdateStatus")]
     public IActionResult UpdateStatus([FromBody] UpdatedProductStatus status)
@@ -118,6 +120,7 @@ public class ProductController : ControllerBase
         return Ok();
     }
 
+    [EnableRateLimiting(Program.slowLimitName)]
     [RoleCheck(Permission.UpdateProductAvailability)]
     [HttpPatch("Recall")]
     public async Task<IActionResult> RecallProduct([FromBody] Guid productId)

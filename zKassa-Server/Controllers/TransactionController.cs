@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using zKassa_Server.Attributes;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
@@ -26,6 +27,7 @@ namespace zKassa_Server.Controllers
             _userManager = userManager;
         }
 
+        [EnableRateLimiting(Program.slowLimitName)]
         [RoleCheck(Permission.SubmitTransaction)]
         [HttpPost]
         public ActionResult<Guid> CreateTransaction([FromBody] NewTransaction newTransaction)
@@ -47,6 +49,7 @@ namespace zKassa_Server.Controllers
             return Ok(transaction.Id);
         }
 
+        [EnableRateLimiting(Program.fastLimitName)]
         [RoleCheck(Permission.GetTransactionInfo)]
         [HttpGet]
         public ActionResult<TransactionInfo> GetInfo([FromQuery] Guid id)

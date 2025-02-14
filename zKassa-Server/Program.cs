@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Identity.Abstractions;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
@@ -16,6 +17,10 @@ namespace zKassa_Server
 {
     public class Program
     {
+        public const string fastLimitName = "FastLimit";
+        public const string slowLimitName = "SlowLimit";
+        public const string verySlowLimitName = "VerySlowLimit";
+
         public static void Main(string[] args)
         {
 #if DEBUG
@@ -59,7 +64,41 @@ namespace zKassa_Server
                     };
                 });
 
-            builder.builder.Services.AddControllers();
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.AddFixedWindowLimiter(
+                    fastLimitName,
+                    limit =>
+                    {
+                        limit.QueueLimit = 2;
+                        limit.Window = TimeSpan.FromSeconds(5);
+                        limit.PermitLimit = 10;
+                        limit.AutoReplenishment = true;
+                    }
+                );
+                options.AddFixedWindowLimiter(
+                    slowLimitName,
+                    limit =>
+                    {
+                        limit.QueueLimit = 0;
+                        limit.Window = TimeSpan.FromMinutes(1);
+                        limit.PermitLimit = 10;
+                        limit.AutoReplenishment = true;
+                    }
+                );
+                options.AddFixedWindowLimiter(
+                    verySlowLimitName, // for auth and creating distribution centers
+                    limit =>
+                    {
+                        limit.QueueLimit = 0;
+                        limit.Window = TimeSpan.FromMinutes(60);
+                        limit.PermitLimit = 40;
+                        limit.AutoReplenishment = true;
+                    }
+                );
+            });
+            builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -76,6 +115,12 @@ namespace zKassa_Server
                 })
                 .AddEntityFrameworkStores<ZDbContext>()
                 .AddUserStore<UserStore<Employee, IdentityRole, ZDbContext>>();
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+            });
 
 #if DEBUG
             builder.Services.AddCors(options =>
@@ -100,7 +145,7 @@ namespace zKassa_Server
             }
 
             //app.UseHttpsRedirection();
-
+            app.UseRateLimiter();
             app.UseAuthorization();
 
             app.MapControllers();

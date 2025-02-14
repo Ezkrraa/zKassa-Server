@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using zKassa_Server.Attributes;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
@@ -26,6 +27,7 @@ namespace zKassa_Server.Controllers
             _dbContext = dbContext;
         }
 
+        [EnableRateLimiting(Program.verySlowLimitName)]
         [RoleCheck(Permission.CreateAnyAccount)]
         [HttpPost("CreateEmployee")]
         public async Task<IActionResult> CreateEmployee([FromBody] NewEmployee newEmployee)
@@ -54,6 +56,7 @@ namespace zKassa_Server.Controllers
             return Ok(user);
         }
 
+        [EnableRateLimiting(Program.verySlowLimitName)]
         [RoleCheck(Permission.ViewAllEmployees)]
         [HttpGet("GetAllEmployees")]
         [Obsolete("Only for testing purposes since fetching all employees is a terrible idea")]
@@ -62,6 +65,7 @@ namespace zKassa_Server.Controllers
             return _dbContext.Users.Select(user => new EmployeeInformation(user)).ToList();
         }
 
+        [EnableRateLimiting(Program.verySlowLimitName)]
         [RoleCheck(Permission.EditAnyEmployee)]
         [HttpPatch("UpdateEmployee")]
         [Obsolete(

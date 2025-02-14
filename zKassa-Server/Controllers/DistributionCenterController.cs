@@ -2,14 +2,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using zKassa_Server.Attributes;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
 using zKassa_Server.Services;
-using zKassa_Server.Attributes;
 
 namespace zKassa_Server.Controllers;
-
 
 [ApiController]
 [Route("[controller]")]
@@ -31,6 +31,7 @@ public class DistributionCenterController : ControllerBase
         _userManager = userManager;
     }
 
+    [EnableRateLimiting(Program.verySlowLimitName)]
     [RoleCheck(Permission.CreateDistCenter)]
     [HttpPost]
     public IActionResult CreateNew([FromBody] string name)
@@ -45,6 +46,7 @@ public class DistributionCenterController : ControllerBase
         return Ok(distCenterGuid);
     }
 
+    [EnableRateLimiting(Program.slowLimitName)]
     [RoleCheck(Permission.GetDistCenterNames)]
     [HttpGet("GetAllNames")]
     public IActionResult GetAllNames()

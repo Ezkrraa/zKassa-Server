@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using zKassa_Server.Attributes;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
@@ -14,6 +15,8 @@ namespace zKassa_Server.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [EnableRateLimiting(Program.slowLimitName)]
+    [RoleCheck(Permission.Categories)]
     public class CategoryController : ControllerBase
     {
         private readonly ZDbContext _dbContext;
@@ -23,14 +26,12 @@ namespace zKassa_Server.Controllers
             _dbContext = dbContext;
         }
 
-        [RoleCheck(Permission.Categories)]
         [HttpGet]
         public IEnumerable<string> GetAll()
         {
             return _dbContext.Categories.Select(cat => cat.Name).Order();
         }
 
-        [RoleCheck(Permission.Categories)]
         [HttpPost("{name}")]
         public IActionResult Create(string name)
         {
@@ -41,7 +42,6 @@ namespace zKassa_Server.Controllers
             return Ok();
         }
 
-        [RoleCheck(Permission.Categories)]
         [HttpGet("{name}")]
         public ActionResult<IEnumerable<ProductInfo>> GetByCategory(string name)
         {
@@ -51,7 +51,7 @@ namespace zKassa_Server.Controllers
             return Ok(category.Products.Select(product => new ProductInfo(product)));
         }
 
-        [RoleCheck(Permission.Categories)]
+        [EnableRateLimiting(Program.verySlowLimitName)]
         [HttpDelete("{name}")]
         public IActionResult Delete(string name)
         {

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
 using zKassa_Server.Services;
@@ -31,6 +32,7 @@ public class AuthenticationController : ControllerBase
         _signInManager = signInManager;
     }
 
+    [EnableRateLimiting(Program.verySlowLimitName)]
     [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
     {

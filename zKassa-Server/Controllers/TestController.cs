@@ -1,11 +1,8 @@
-using System;
 using System.Net;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
-using zKassa_Server.Attributes;
+using Microsoft.AspNetCore.RateLimiting;
 using zKassa_Server.ControllerModels;
 using zKassa_Server.Models;
 using zKassa_Server.Services;
@@ -13,6 +10,7 @@ using zKassa_Server.Services;
 namespace zKassa_Server.Controllers;
 
 #if DEBUG
+[EnableRateLimiting(Program.fastLimitName)]
 [ApiController]
 [Route("[controller]")]
 public class TestController : ControllerBase

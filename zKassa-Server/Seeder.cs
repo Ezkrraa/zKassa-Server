@@ -31,8 +31,8 @@ namespace zKassa_Server
             dbContext.Categories.Add(Fruit);
             dbContext.Categories.Add(Drinks);
 
-            List<Product> products = new()
-            {
+            List<Product> products =
+            [
                 new(Guid.NewGuid(), "Tomato", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name),
                 new(Guid.NewGuid(), "Potato", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name),
                 new(Guid.NewGuid(), "Cucumber", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name),
@@ -41,7 +41,7 @@ namespace zKassa_Server
                 new(Guid.NewGuid(), "Fake Monster", 0.69m, 12, 0.15m, 0.01m, 0.24m, Drinks.Name),
                 new(Guid.NewGuid(), "Power drink 1x6", 3.59m, 4, 0.90m, 0.00m, 0.24m, Drinks.Name),
                 new(Guid.NewGuid(), "Fake Monster", 0.69m, 12, 0.15m, 0.00m, 0.24m, Drinks.Name),
-            };
+            ];
             for (int i = 0; i < products.Count; i++)
             {
                 dbContext.Products.Add(products[i]);
