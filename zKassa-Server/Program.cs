@@ -18,17 +18,19 @@ namespace zKassa_Server
     {
         public static void Main(string[] args)
         {
-            if (args.Any(arg => arg.Equals("--create-db")))
+#if DEBUG
+            // don't allow seeding in prod
+            if (args.Any(arg => arg.Equals("--seed-db")))
             {
-                new Services.ZDbContext(true);
-                Console.WriteLine("Created database successfully");
-                return;
-            }
-            else if (args.Any(arg => arg.Equals("--seed-db")))
-            {
-                new Services.ZDbContext(false, true);
+                Seeder.SeedDatabase();
                 Console.WriteLine("Seeded database successfully");
                 return;
+            }
+#endif
+            if (args.Any(arg => arg.Equals("--create-db")))
+            {
+                // can't always create a database on startup if we want migrations to work
+                Seeder.CreateDatabase();
             }
 
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -57,7 +59,7 @@ namespace zKassa_Server
                     };
                 });
 
-            builder.Services.AddControllers();
+            builder.builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

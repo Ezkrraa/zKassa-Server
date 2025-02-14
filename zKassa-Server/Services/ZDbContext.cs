@@ -22,68 +22,11 @@ public class ZDbContext : IdentityDbContext<Employee>
     public DbSet<TransactionItem> TransactionItems { get; set; }
     public string DbPath { get; }
 
-    public ZDbContext(bool createMigration = false, bool seedDatabase = false)
+    public ZDbContext()
     {
         Environment.SpecialFolder folder = Environment.SpecialFolder.LocalApplicationData;
         string path = Path.Join(Environment.GetFolderPath(folder), "zKassa");
         DbPath = Path.Join(path, "Database.db");
-        if (createMigration)
-        {
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            if (!File.Exists(DbPath))
-                base.Database.Migrate();
-        }
-        else if (seedDatabase)
-        {
-            using (ZDbContext dbContext = new())
-            {
-                dbContext.Database.Migrate();
-
-                Guid distCenterId = Guid.NewGuid();
-                dbContext.DistributionCenters.Add(new(distCenterId, "Zuid-Holland"));
-                Guid shopId = Guid.NewGuid();
-                dbContext.Shops.Add(new(shopId, "Hellevoetsluis", distCenterId));
-                Category Fruit = new("Fruit & Veg");
-                Category Drinks = new("Drinks");
-                dbContext.Categories.Add(Fruit);
-                dbContext.Categories.Add(Drinks);
-
-                Guid guid1 = Guid.NewGuid();
-                dbContext.Products.Add(new(guid1, "Tomato", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name));
-                dbContext.EanCodes.Add(new(guid1, "0"));
-                dbContext.PriceLogs.Add(new(guid1, 0.15m, DateTime.UtcNow));
-
-                Guid guid2 = Guid.NewGuid();
-                dbContext.Products.Add(new(guid2, "Potato", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name));
-                dbContext.EanCodes.Add(new(guid2, "01"));
-                dbContext.PriceLogs.Add(new(guid2, 0.15m, DateTime.UtcNow));
-
-                Guid guid3 = Guid.NewGuid();
-                dbContext.Products.Add(
-                    new(guid3, "Cucumber", 0.15m, 12, 0m, 0m, 0.12m, Fruit.Name)
-                );
-                dbContext.EanCodes.Add(new(guid3, "012"));
-                dbContext.PriceLogs.Add(new(guid3, 0.15m, DateTime.UtcNow));
-
-                Guid guid4 = Guid.NewGuid();
-                dbContext.Products.Add(
-                    new(guid4, "Monster Energy", 0.99m, 24, 0.15m, 0m, 0.24m, Drinks.Name)
-                );
-                dbContext.EanCodes.Add(new(guid4, "0123"));
-                dbContext.PriceLogs.Add(new(guid4, 0.99m, DateTime.UtcNow));
-
-                Guid guid5 = Guid.NewGuid();
-                dbContext.Products.Add(
-                    new(guid5, "Fake Monster", 0.69m, 12, 0.15m, 0.01m, 0.24m, Drinks.Name)
-                );
-                dbContext.EanCodes.Add(new(guid5, "01234"));
-                dbContext.PriceLogs.Add(new(guid5, 0.69m, DateTime.UtcNow));
-
-                dbContext.SaveChanges();
-            }
-            return;
-        }
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
